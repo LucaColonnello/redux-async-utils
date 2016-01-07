@@ -1,0 +1,10 @@
+node_modules
+*.log
+.DS_Store
+dist
+lib
+coverage
+.vimsession
+.lvimrc
+.nyc_output
+local_data/
