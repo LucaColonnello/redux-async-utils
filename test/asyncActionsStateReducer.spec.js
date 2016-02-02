@@ -12,13 +12,14 @@ import {
   PENDING,
   DONE,
   FAILURE,
+  STATE_TO_STRING,
 } from '../src/constants';
 
 const SOMETHING_TO_DO_ASYNCHRONOUSLY = 'SOMETHING_TO_DO_ASYNCHRONOUSLY';
 const SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY = 'SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY';
 let asyncActionsStateStore = initialState;
 
-test('should return a new array with pending action', t => {
+test('should return a new object with pending action', t => {
   const actualState = asyncActionsState(
     asyncActionsStateStore,
     pendingActionCreator(SOMETHING_TO_DO_ASYNCHRONOUSLY)
@@ -28,7 +29,7 @@ test('should return a new array with pending action', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: PENDING,
+        state: STATE_TO_STRING[PENDING],
         error: null,
       },
     ],
@@ -45,7 +46,7 @@ test('should return a new array with pending action', t => {
   asyncActionsStateStore = actualState;
 });
 
-test('should return a new array with updated async state', t => {
+test('should return a new object with updated async state', t => {
   const actualState = asyncActionsState(
     asyncActionsStateStore,
     doneActionCreator(SOMETHING_TO_DO_ASYNCHRONOUSLY)
@@ -55,7 +56,7 @@ test('should return a new array with updated async state', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: DONE,
+        state: STATE_TO_STRING[DONE],
         error: null,
       },
     ],
@@ -82,12 +83,12 @@ test('should manage a new pending action maintaining previous one', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: DONE,
+        state: STATE_TO_STRING[DONE],
         error: null,
       },
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-        state: PENDING,
+        state: STATE_TO_STRING[PENDING],
         error: null,
       },
     ],
@@ -105,8 +106,12 @@ test('should manage a new pending action maintaining previous one', t => {
   asyncActionsStateStore = actualState;
 });
 
-test('should manage error when fail an async action', t => {
+test('should manage error when fail an async action and create indexes if there\'s not', t => {
   const err = new Error('ops!');
+
+  // overwrite indexes so it has to generate new
+  asyncActionsStateStore.indexes = {};
+
   const actualState = asyncActionsState(
     asyncActionsStateStore,
     failureActionCreator(SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY, err)
@@ -116,12 +121,12 @@ test('should manage error when fail an async action', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: DONE,
+        state: STATE_TO_STRING[DONE],
         error: null,
       },
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-        state: FAILURE,
+        state: STATE_TO_STRING[FAILURE],
         error: err,
       },
     ],

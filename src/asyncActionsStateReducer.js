@@ -4,6 +4,7 @@ import {
   ASYNC_UTILS_STATE_FOR,
   DONE,
   FAILURE,
+  STATE_TO_STRING,
 } from './constants';
 
 export const initialState = {
@@ -19,7 +20,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
   let newState = state;
 
   if (action[ASYNC_UTILS_MARKER]) {
-    const asyncState = action[ASYNC_UTILS_STATE];
+    const asyncState = STATE_TO_STRING[action[ASYNC_UTILS_STATE]];
     const error = action.error || null;
     const asyncStateFor = action[ASYNC_UTILS_STATE_FOR];
 
@@ -59,19 +60,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
     }
 
     // create new
-    if (typeof index !== 'undefined') {
-      // update vars
-      if (asyncState === DONE) {
-        newState.digested++;
-        newState.successCount++;
-      }
-
-      if (asyncState === FAILURE) {
-        newState.digested++;
-        newState.errorsCount++;
-        newState.failedActionsIndexs.push(index);
-      }
-    } else {
+    if (typeof index === 'undefined') {
       newState.asyncActionsStates.push({
         [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
         state: asyncState,
@@ -80,6 +69,19 @@ export default function asyncActionsState(state = initialState, action = {}) {
 
       // save index
       newState.indexes[asyncStateFor] = newState.asyncActionsStates.length - 1;
+      index = newState.asyncActionsStates.length - 1;
+    }
+
+    // update vars
+    if (asyncState === STATE_TO_STRING[DONE]) {
+      newState.digested++;
+      newState.successCount++;
+    }
+
+    if (asyncState === STATE_TO_STRING[FAILURE]) {
+      newState.digested++;
+      newState.errorsCount++;
+      newState.failedActionsIndexs.push(index);
     }
   }
 
