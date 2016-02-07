@@ -1,3 +1,4 @@
 export * from './actionCreators';
-export * from './asyncActionsStateReducer';
+export asyncActionsState from './asyncActionsStateReducer';
+export createAsyncActionsStateChecker from './createAsyncActionsStateChecker';
 export * from './constants';
