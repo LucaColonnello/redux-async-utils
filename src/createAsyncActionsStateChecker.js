@@ -67,9 +67,13 @@ export default function createAsyncActionsStateChecker(store = {}, ...checkFor) 
     } else {
       const asyncActionsState = {};
       checkFor.forEach((k) => {
-        asyncActionsState[k] = store
+        const value = store
           .asyncActionsState
           .asyncActionsStates[store.asyncActionsState.indexes[k]];
+
+        if (value) {
+          asyncActionsState[k] = value;
+        }
       });
 
       asyncActionsStateChecker = new AsyncActionsStateChecker({

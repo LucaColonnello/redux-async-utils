@@ -2,6 +2,7 @@ import {
   ASYNC_UTILS_MARKER,
   ASYNC_UTILS_STATE,
   ASYNC_UTILS_STATE_FOR,
+  PENDING,
   DONE,
   FAILURE,
   STATE_TO_STRING,
@@ -23,6 +24,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
     const asyncState = STATE_TO_STRING[action[ASYNC_UTILS_STATE]];
     const error = action.error || null;
     const asyncStateFor = action[ASYNC_UTILS_STATE_FOR];
+    let previousState;
 
     let index;
 
@@ -38,6 +40,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
     // look for asyncState in indexes
     if (typeof newState.indexes[asyncStateFor] !== 'undefined') {
       index = newState.indexes[asyncStateFor];
+      previousState = Object.assign({}, newState.asyncActionsStates[index]);
       newState.asyncActionsStates[index] = {
         [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
         state: asyncState,
@@ -48,6 +51,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
       newState.asyncActionsStates.forEach((v, i) => {
         if (v[ASYNC_UTILS_STATE_FOR] === asyncStateFor) {
           index = i;
+          previousState = Object.assign({}, newState.asyncActionsStates[index]);
           newState.asyncActionsStates[i] = {
             [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
             state: asyncState,
@@ -70,6 +74,29 @@ export default function asyncActionsState(state = initialState, action = {}) {
       // save index
       newState.indexes[asyncStateFor] = newState.asyncActionsStates.length - 1;
       index = newState.asyncActionsStates.length - 1;
+    }
+
+    // if an async action was digested and a new pending action is requested,
+    // reset digested, successCount and errorsCount as the action was never requested before
+    if (
+      previousState &&
+
+      // prevent variables reset in case of simple passage from PENDING to other state
+      // in that case the action has to be digested yet
+      previousState.state !== STATE_TO_STRING[PENDING] &&
+
+      // prevent pending action dispatched twice
+      previousState.state !== asyncState
+    ) {
+      newState.digested--;
+      if (previousState.state === STATE_TO_STRING[DONE]) {
+        newState.successCount--;
+      }
+
+      if (previousState.state === STATE_TO_STRING[FAILURE]) {
+        newState.errorsCount--;
+        newState.failedActionsIndexs.splice(newState.failedActionsIndexs.indexOf(index), 1);
+      }
     }
 
     // update vars
