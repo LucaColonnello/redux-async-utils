@@ -58,17 +58,17 @@
     "react": "0.14.6",
     "react-addons-test-utils": "0.14.6",
     "react-dom": "0.14.6",
-    "redux": "3.0.5",
+    "redux": "^3.2.1",
     "rimraf": "2.5.0",
     "semantic-release": "4.3.5",
     "sinon": "1.17.2",
+    "tap-nyan": "0.0.2",
     "validate-commit-msg": "1.0.0",
     "watch": "0.17.1",
     "webpack": "1.12.10"
   },
   "dependencies": {
-    "hoist-non-react-statics": "1.0.3",
-    "tap-nyan": "0.0.2"
+    "hoist-non-react-statics": "1.0.3"
   },
   "peerDependencies": {
     "redux": ">=3.0.0"

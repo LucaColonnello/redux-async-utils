@@ -12,7 +12,6 @@ import {
   PENDING,
   DONE,
   FAILURE,
-  STATE_TO_STRING,
 } from '../src/constants';
 
 const SOMETHING_TO_DO_ASYNCHRONOUSLY = 'SOMETHING_TO_DO_ASYNCHRONOUSLY';
@@ -30,7 +29,7 @@ test('should return a new object with pending action', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[PENDING],
+        state: PENDING,
         error: null,
       },
     ],
@@ -57,7 +56,7 @@ test('should return a new object with updated async state', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[DONE],
+        state: DONE,
         error: null,
       },
     ],
@@ -84,12 +83,12 @@ test('should manage a new pending action maintaining previous one', t => {
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[DONE],
+        state: DONE,
         error: null,
       },
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[PENDING],
+        state: PENDING,
         error: null,
       },
     ],
@@ -120,12 +119,12 @@ test('should manage error when fail an async action and create indexes if there\
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[DONE],
+        state: DONE,
         error: null,
       },
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[FAILURE],
+        state: FAILURE,
         error: err,
       },
     ],
@@ -153,12 +152,12 @@ test('should reset all the indexes and counters when perform a previous performe
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[PENDING],
+        state: PENDING,
         error: null,
       },
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[FAILURE],
+        state: FAILURE,
         error: err,
       },
     ],
@@ -186,12 +185,12 @@ test('should reset failed actions index when perform a previous performed action
     asyncActionsStates: [
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[PENDING],
+        state: PENDING,
         error: null,
       },
       {
         [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-        state: STATE_TO_STRING[PENDING],
+        state: PENDING,
         error: null,
       },
     ],
