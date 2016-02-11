@@ -7,7 +7,6 @@ import {
   PENDING,
   DONE,
   FAILURE,
-  STATE_TO_STRING,
 } from '../src/constants';
 
 
@@ -20,12 +19,12 @@ test('should give "hasn\'t done" without any filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[PENDING],
+          state: PENDING,
           error: null,
         },
       ],
@@ -54,12 +53,12 @@ test('should give "has done" without any filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
       ],
@@ -88,12 +87,12 @@ test('should give some errors without any filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[FAILURE],
+          state: FAILURE,
           error: new Error('Some error'),
         },
       ],
@@ -122,12 +121,12 @@ test('should give errors when are all in error without any filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[FAILURE],
+          state: FAILURE,
           error: new Error('Some error 1'),
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[FAILURE],
+          state: FAILURE,
           error: new Error('Some error 2'),
         },
       ],
@@ -156,12 +155,12 @@ test('should give "hasn\'t done" with filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[PENDING],
+          state: PENDING,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
       ],
@@ -191,12 +190,12 @@ test('should give "has done" with filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[PENDING],
+          state: PENDING,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
       ],
@@ -226,12 +225,12 @@ test('should give "hasn\'t done" with multiple filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[PENDING],
+          state: PENDING,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
       ],
@@ -262,12 +261,12 @@ test('should give "has done" with multiple filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
       ],
@@ -298,12 +297,12 @@ test('should give "has done" when check for one key with multiple filter', t => 
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[PENDING],
+          state: PENDING,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
       ],
@@ -334,12 +333,12 @@ test('should give some errors with multiple filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[DONE],
+          state: DONE,
           error: null,
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[FAILURE],
+          state: FAILURE,
           error: new Error('Some error'),
         },
       ],
@@ -370,12 +369,12 @@ test('should give errors when are all in error with multiple filter', t => {
       asyncActionsStates: [
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[FAILURE],
+          state: FAILURE,
           error: new Error('Some error'),
         },
         {
           [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
-          state: STATE_TO_STRING[FAILURE],
+          state: FAILURE,
           error: new Error('Some error'),
         },
       ],

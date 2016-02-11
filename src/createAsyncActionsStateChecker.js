@@ -1,7 +1,6 @@
 import {
   PENDING,
   FAILURE,
-  STATE_TO_STRING,
 } from './constants';
 
 class AsyncActionsStateChecker {
@@ -22,13 +21,13 @@ class AsyncActionsStateChecker {
 
     if (checkFor) {
       const asyncState = this.asyncActionsState[checkFor].state;
-      return asyncState !== STATE_TO_STRING[PENDING];
+      return asyncState !== PENDING;
     }
 
     const keys = Object.keys(this.asyncActionsState);
     return keys
       .filter((k) => {
-        return this.asyncActionsState[k].state !== STATE_TO_STRING[PENDING];
+        return this.asyncActionsState[k].state !== PENDING;
       })
       .length === keys.length
     ;
@@ -41,7 +40,7 @@ class AsyncActionsStateChecker {
 
     return Object.keys(this.asyncActionsState)
       .filter((k) => {
-        return this.asyncActionsState[k].state === STATE_TO_STRING[FAILURE];
+        return this.asyncActionsState[k].state === FAILURE;
       })
       .map(k => this.asyncActionsState[k].error);
   }

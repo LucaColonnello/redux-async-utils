@@ -5,7 +5,6 @@ import {
   PENDING,
   DONE,
   FAILURE,
-  STATE_TO_STRING,
 } from './constants';
 
 export const initialState = {
@@ -21,7 +20,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
   let newState = state;
 
   if (action[ASYNC_UTILS_MARKER]) {
-    const asyncState = STATE_TO_STRING[action[ASYNC_UTILS_STATE]];
+    const asyncState = action[ASYNC_UTILS_STATE];
     const error = action.error || null;
     const asyncStateFor = action[ASYNC_UTILS_STATE_FOR];
     let previousState;
@@ -83,29 +82,29 @@ export default function asyncActionsState(state = initialState, action = {}) {
 
       // prevent variables reset in case of simple passage from PENDING to other state
       // in that case the action has to be digested yet
-      previousState.state !== STATE_TO_STRING[PENDING] &&
+      previousState.state !== PENDING &&
 
       // prevent pending action dispatched twice
       previousState.state !== asyncState
     ) {
       newState.digested--;
-      if (previousState.state === STATE_TO_STRING[DONE]) {
+      if (previousState.state === DONE) {
         newState.successCount--;
       }
 
-      if (previousState.state === STATE_TO_STRING[FAILURE]) {
+      if (previousState.state === FAILURE) {
         newState.errorsCount--;
         newState.failedActionsIndexs.splice(newState.failedActionsIndexs.indexOf(index), 1);
       }
     }
 
     // update vars
-    if (asyncState === STATE_TO_STRING[DONE]) {
+    if (asyncState === DONE && (!previousState || previousState.state !== DONE)) {
       newState.digested++;
       newState.successCount++;
     }
 
-    if (asyncState === STATE_TO_STRING[FAILURE]) {
+    if (asyncState === FAILURE && (!previousState || previousState.state !== FAILURE)) {
       newState.digested++;
       newState.errorsCount++;
       newState.failedActionsIndexs.push(index);
