@@ -2,6 +2,7 @@ import {
   ASYNC_UTILS_MARKER,
   ASYNC_UTILS_STATE,
   ASYNC_UTILS_STATE_FOR,
+  ASYNC_UTILS_STATE_GROUP,
   PENDING,
   DONE,
   FAILURE,
@@ -10,9 +11,10 @@ import {
 export const initialState = {
   asyncActionsStates: [],
   indexes: {},
+  groups: {},
   errorsCount: 0,
   successCount: 0,
-  failedActionsIndexs: [],
+  failedActionsIndexes: [],
   digested: 0,
 };
 
@@ -23,15 +25,17 @@ export default function asyncActionsState(state = initialState, action = {}) {
     const asyncState = action[ASYNC_UTILS_STATE];
     const error = action.error || null;
     const asyncStateFor = action[ASYNC_UTILS_STATE_FOR];
+    const asyncStateGroup = action[ASYNC_UTILS_STATE_GROUP];
     let previousState;
 
     let index;
 
     newState = {
       asyncActionsStates: state.asyncActionsStates.slice(0),
-      indexes: state.indexes,
+      indexes: { ...state.indexes },
+      groups: { ...state.groups },
       errorsCount: state.errorsCount,
-      failedActionsIndexs: state.failedActionsIndexs,
+      failedActionsIndexes: state.failedActionsIndexes.slice(0),
       successCount: state.successCount,
       digested: state.digested,
     };
@@ -64,15 +68,26 @@ export default function asyncActionsState(state = initialState, action = {}) {
 
     // create new
     if (typeof index === 'undefined') {
-      newState.asyncActionsStates.push({
+      const newActionState = {
         [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
         state: asyncState,
         error,
-      });
+      };
+      newState.asyncActionsStates.push(newActionState);
 
       // save index
       newState.indexes[asyncStateFor] = newState.asyncActionsStates.length - 1;
       index = newState.asyncActionsStates.length - 1;
+
+      // save in group
+      if (asyncStateGroup) {
+        if (!newState.groups[asyncStateGroup]) {
+          newState.groups[asyncStateGroup] = [index];
+        } else {
+          newState.groups[asyncStateGroup] = newState.groups[asyncStateGroup].slice(0);
+          newState.groups[asyncStateGroup].push(index);
+        }
+      }
     }
 
     // if an async action was digested and a new pending action is requested,
@@ -94,7 +109,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
 
       if (previousState.state === FAILURE) {
         newState.errorsCount--;
-        newState.failedActionsIndexs.splice(newState.failedActionsIndexs.indexOf(index), 1);
+        newState.failedActionsIndexes.splice(newState.failedActionsIndexes.indexOf(index), 1);
       }
     }
 
@@ -107,7 +122,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
     if (asyncState === FAILURE && (!previousState || previousState.state !== FAILURE)) {
       newState.digested++;
       newState.errorsCount++;
-      newState.failedActionsIndexs.push(index);
+      newState.failedActionsIndexes.push(index);
     }
   }
 

@@ -1,6 +1,7 @@
 import {
   PENDING,
   FAILURE,
+  ASYNC_UTILS_STATE_FOR,
 } from './constants';
 
 class AsyncActionsStateChecker {
@@ -56,7 +57,7 @@ export default function createAsyncActionsStateChecker(store = {}, ...checkFor) 
         ),
         errors: store
           .asyncActionsState
-          .failedActionsIndexs.map(i => {
+          .failedActionsIndexes.map(i => {
             return store
               .asyncActionsState
               .asyncActionsStates[i].error;
@@ -66,12 +67,28 @@ export default function createAsyncActionsStateChecker(store = {}, ...checkFor) 
     } else {
       const asyncActionsState = {};
       checkFor.forEach((k) => {
-        const value = store
+        if (typeof k === 'object' && k.group) {
+          // manage groups
+          const value = store
+          .asyncActionsState
+          .groups[k.group];
+
+          if (value && value.length) {
+            value.forEach((v) => {
+              const action = store
+              .asyncActionsState
+              .asyncActionsStates[v];
+              asyncActionsState[action[ASYNC_UTILS_STATE_FOR]] = action;
+            });
+          }
+        } else if (typeof k === 'string') {
+          const value = store
           .asyncActionsState
           .asyncActionsStates[store.asyncActionsState.indexes[k]];
 
-        if (value) {
-          asyncActionsState[k] = value;
+          if (value) {
+            asyncActionsState[k] = value;
+          }
         }
       });
 
