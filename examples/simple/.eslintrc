@@ -6,6 +6,8 @@
     "node": true
   },
   "rules": {
+    "react/no-is-mounted": 0,
+    "react/no-deprecated": 0,
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
     "react/react-in-jsx-scope": 2,
