@@ -4,7 +4,6 @@ import 'babel-core/register';
 import createAsyncActionsStateChecker from '../src/createAsyncActionsStateChecker';
 import {
   ASYNC_UTILS_STATE_FOR,
-  ASYNC_UTILS_STATE_GROUP,
   PENDING,
   DONE,
   FAILURE,
