@@ -16,20 +16,34 @@ export function createActionCreatorFromPromise(
   debounce = false
 ) {
   if (!manageAsyncStateFor) {
-    throw new Error(`actionCretorFromPromise: manageAsyncStateFor is required,${
+    throw new Error(`createActionCreatorFromPromise: manageAsyncStateFor is required,${
     ''}it can be a function or a string`);
   }
 
   if (!getPromise) {
-    throw new Error('actionCretorFromPromise: getPromise is required');
+    throw new Error('createActionCreatorFromPromise: getPromise is required');
   }
 
   let lastRequestKey;
 
   return (...args) => (dispatch, getState) => {
-    let key = manageAsyncStateFor;
+    let key;
+    let group;
+    let asyncStateFor;
+
     if (typeof manageAsyncStateFor === 'function') {
-      key = manageAsyncStateFor(...args);
+      const manageAsyncStateForArgs = args.slice(0);
+      manageAsyncStateForArgs.push(getState);
+      asyncStateFor = manageAsyncStateFor(...manageAsyncStateForArgs);
+    } else {
+      asyncStateFor = manageAsyncStateFor;
+    }
+
+    if (typeof asyncStateFor === 'object') {
+      key = asyncStateFor.key;
+      group = asyncStateFor.group;
+    } else if (typeof asyncStateFor === 'string') {
+      key = asyncStateFor;
     }
 
     // use a bool or a string property
@@ -47,14 +61,33 @@ export function createActionCreatorFromPromise(
       ) {
         return;
       }
+
+      if (
+        typeof lockIfAlreadyInPending === 'object' &&
+        lockIfAlreadyInPending.length &&
+        !hasDone(getState(), ...lockIfAlreadyInPending)
+      ) {
+        return;
+      }
+
+      if (
+        typeof lockIfAlreadyInPending === 'object' &&
+        typeof lockIfAlreadyInPending.length === 'undefined' &&
+        !hasDone(getState(), lockIfAlreadyInPending)
+      ) {
+        return;
+      }
     }
 
-    const _lastRequestKey = (new Date()).getTime();
+    const _lastRequestKey = (new Date()).getTime() + (Math.random() + 1000);
     lastRequestKey = _lastRequestKey;
 
-    dispatch(pendingActionCreator(key));
+    dispatch(pendingActionCreator(key, group));
 
-    getPromise(...args)
+    const promiseArgs = args.slice(0);
+    promiseArgs.push(getState);
+
+    getPromise(...promiseArgs)
       .then((d) => {
         if (debounce) {
           if (lastRequestKey !== _lastRequestKey) {
@@ -62,13 +95,12 @@ export function createActionCreatorFromPromise(
           }
         }
 
-        if (d) {
-          args.splice(0, 0, d);
-        }
+        const doneActionCreatorArgs = args.slice(0);
+        doneActionCreatorArgs.push(d, getState);
 
         dispatch(doneActionCreator(
           key,
-          actionCreator(...args)
+          actionCreator(...doneActionCreatorArgs)
         ));
       })
       .catch((e) => {
