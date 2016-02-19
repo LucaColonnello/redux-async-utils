@@ -2,16 +2,18 @@ import {
   ASYNC_UTILS_MARKER,
   ASYNC_UTILS_STATE,
   ASYNC_UTILS_STATE_FOR,
+  ASYNC_UTILS_STATE_GROUP,
   PENDING,
   DONE,
   FAILURE,
 } from './constants';
 
-export function pendingActionCreator(manageAsyncStateFor) {
+export function pendingActionCreator(manageAsyncStateFor, group) {
   return {
     type: PENDING,
     [ASYNC_UTILS_MARKER]: true,
     [ASYNC_UTILS_STATE_FOR]: manageAsyncStateFor,
+    [ASYNC_UTILS_STATE_GROUP]: group,
     [ASYNC_UTILS_STATE]: PENDING,
   };
 }

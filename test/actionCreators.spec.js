@@ -10,6 +10,7 @@ import {
   ASYNC_UTILS_MARKER,
   ASYNC_UTILS_STATE,
   ASYNC_UTILS_STATE_FOR,
+  ASYNC_UTILS_STATE_GROUP,
   PENDING,
   DONE,
   FAILURE,
@@ -23,6 +24,18 @@ test('should return a pending action', t => {
     [ASYNC_UTILS_MARKER]: true,
     [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
     [ASYNC_UTILS_STATE]: PENDING,
+    [ASYNC_UTILS_STATE_GROUP]: undefined,
+  });
+});
+
+test('should return a pending action managing group', t => {
+  const group = 'test';
+  t.same(pendingActionCreator(SOMETHING_TO_DO_ASYNCHRONOUSLY, group), {
+    type: PENDING,
+    [ASYNC_UTILS_MARKER]: true,
+    [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
+    [ASYNC_UTILS_STATE]: PENDING,
+    [ASYNC_UTILS_STATE_GROUP]: group,
   });
 });
 
