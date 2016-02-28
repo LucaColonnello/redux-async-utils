@@ -52,14 +52,14 @@ export function createActionCreatorFromPromise(
         typeof lockIfAlreadyInPending === 'boolean' &&
         !hasDone(getState(), key)
       ) {
-        return;
+        return Promise.resolve();
       }
 
       if (
         typeof lockIfAlreadyInPending === 'string' &&
         !hasDone(getState(), lockIfAlreadyInPending)
       ) {
-        return;
+        return Promise.resolve();
       }
 
       if (
@@ -67,7 +67,7 @@ export function createActionCreatorFromPromise(
         lockIfAlreadyInPending.length &&
         !hasDone(getState(), ...lockIfAlreadyInPending)
       ) {
-        return;
+        return Promise.resolve();
       }
 
       if (
@@ -75,7 +75,7 @@ export function createActionCreatorFromPromise(
         typeof lockIfAlreadyInPending.length === 'undefined' &&
         !hasDone(getState(), lockIfAlreadyInPending)
       ) {
-        return;
+        return Promise.resolve();
       }
     }
 
@@ -85,9 +85,9 @@ export function createActionCreatorFromPromise(
     dispatch(pendingActionCreator(key, group));
 
     const promiseArgs = args.slice(0);
-    promiseArgs.push(getState);
+    promiseArgs.push(dispatch, getState);
 
-    getPromise(...promiseArgs)
+    return getPromise(...promiseArgs)
       .then((d) => {
         if (debounce) {
           if (lastRequestKey !== _lastRequestKey) {
