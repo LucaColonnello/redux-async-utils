@@ -91,7 +91,7 @@ export function createActionCreatorFromPromise(
       .then((d) => {
         if (debounce) {
           if (lastRequestKey !== _lastRequestKey) {
-            return;
+            return void 0;
           }
         }
 
@@ -102,15 +102,19 @@ export function createActionCreatorFromPromise(
           key,
           actionCreator(...doneActionCreatorArgs)
         ));
+
+        return d;
       })
       .catch((e) => {
         if (debounce) {
           if (lastRequestKey !== _lastRequestKey) {
-            return;
+            return void 0;
           }
         }
 
         dispatch(failureActionCreator(key, e));
+
+        return e;
       })
     ;
   };
