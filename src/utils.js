@@ -8,6 +8,9 @@ import createAsyncActionsStateChecker from './createAsyncActionsStateChecker';
 export const hasDone = (state, ...checkFor) =>
 createAsyncActionsStateChecker(state, ...checkFor).hasDone();
 
+export const isPending = (state, ...checkFor) =>
+createAsyncActionsStateChecker(state, ...checkFor).isPending();
+
 export function createActionCreatorFromPromise(
   manageAsyncStateFor,
   getPromise,
@@ -50,14 +53,14 @@ export function createActionCreatorFromPromise(
     if (lockIfAlreadyInPending !== false) {
       if (
         typeof lockIfAlreadyInPending === 'boolean' &&
-        !hasDone(getState(), key)
+        isPending(getState(), key)
       ) {
         return Promise.resolve();
       }
 
       if (
         typeof lockIfAlreadyInPending === 'string' &&
-        !hasDone(getState(), lockIfAlreadyInPending)
+        isPending(getState(), lockIfAlreadyInPending)
       ) {
         return Promise.resolve();
       }
@@ -65,7 +68,7 @@ export function createActionCreatorFromPromise(
       if (
         typeof lockIfAlreadyInPending === 'object' &&
         lockIfAlreadyInPending.length &&
-        !hasDone(getState(), ...lockIfAlreadyInPending)
+        isPending(getState(), ...lockIfAlreadyInPending)
       ) {
         return Promise.resolve();
       }
@@ -73,7 +76,7 @@ export function createActionCreatorFromPromise(
       if (
         typeof lockIfAlreadyInPending === 'object' &&
         typeof lockIfAlreadyInPending.length === 'undefined' &&
-        !hasDone(getState(), lockIfAlreadyInPending)
+        isPending(getState(), lockIfAlreadyInPending)
       ) {
         return Promise.resolve();
       }

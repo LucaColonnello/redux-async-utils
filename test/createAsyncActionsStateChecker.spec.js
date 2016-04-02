@@ -7,6 +7,7 @@ import {
   PENDING,
   DONE,
   FAILURE,
+  INVALIDATED,
 } from '../src/constants';
 
 
@@ -47,6 +48,7 @@ test('should give "hasn\'t done" without any filter', t => {
   );
 
   t.is(testObj.hasDone(), false);
+  t.is(testObj.isPending(), true);
   t.is(testObj.getErrors().length, 0);
 });
 
@@ -184,6 +186,7 @@ test('should give "hasn\'t done" with filter', t => {
   );
 
   t.is(testObj.hasDone(), false);
+  t.is(testObj.isPending(), true);
   t.is(testObj.getErrors().length, 0);
 });
 
@@ -290,6 +293,9 @@ test('should give "hasn\'t done" with multiple filter', t => {
   );
 
   t.is(testObj.hasDone(), false);
+  t.is(testObj.isPending(), true);
+  t.is(testObj.isPending(SOMETHING_TO_DO_ASYNCHRONOUSLY), true);
+  t.is(testObj.isPending(SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY), false);
   t.is(testObj.getErrors().length, 0);
 });
 
@@ -437,7 +443,7 @@ test('should give errors when are all in error with multiple filter', t => {
   t.is(testObj.getErrors().length, 2);
 });
 
-test('should ignore non existing filter', t => {
+test('should check non existing filter', t => {
   const store = {
     asyncActionsState: {
       asyncActionsStates: [
@@ -470,8 +476,45 @@ test('should ignore non existing filter', t => {
     NOTHING,
   );
 
-  t.is(testObj.hasDone(), true);
+  t.is(testObj.hasDone(), false);
   t.is(testObj.getErrors().length, 2);
+});
+
+test('should works with invalidated actions', t => {
+  const store = {
+    asyncActionsState: {
+      asyncActionsStates: [
+        {
+          [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
+          state: FAILURE,
+          error: new Error('Some error'),
+        },
+        {
+          [ASYNC_UTILS_STATE_FOR]: SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
+          state: INVALIDATED,
+          error: null,
+        },
+      ],
+      indexes: {
+        [SOMETHING_TO_DO_ASYNCHRONOUSLY]: 0,
+        [SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY]: 1,
+      },
+      errorsCount: 1,
+      successCount: 0,
+      failedActionsIndexes: [0],
+      digested: 2,
+    },
+  };
+
+  const testObj = createAsyncActionsStateChecker(
+    store,
+    SOMETHING_TO_DO_ASYNCHRONOUSLY,
+    SOMETHING_ELSE_TO_DO_ASYNCHRONOUSLY,
+  );
+
+  t.is(testObj.hasDone(), false);
+  t.is(testObj.isPending(), false);
+  t.is(testObj.getErrors().length, 1);
 });
 
 test('should manage also groups without any filters', t => {

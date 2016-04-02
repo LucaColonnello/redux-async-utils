@@ -4,6 +4,7 @@ import {
   pendingActionCreator,
   doneActionCreator,
   failureActionCreator,
+  invalidateActionCreator,
 } from '../src/actionCreators';
 
 import {
@@ -14,6 +15,7 @@ import {
   PENDING,
   DONE,
   FAILURE,
+  INVALIDATED,
 } from '../src/constants';
 
 const SOMETHING_TO_DO_ASYNCHRONOUSLY = 'SOMETHING_TO_DO_ASYNCHRONOUSLY';
@@ -36,6 +38,15 @@ test('should return a pending action managing group', t => {
     [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
     [ASYNC_UTILS_STATE]: PENDING,
     [ASYNC_UTILS_STATE_GROUP]: group,
+  });
+});
+
+test('should return an invalidated action', t => {
+  t.same(invalidateActionCreator(SOMETHING_TO_DO_ASYNCHRONOUSLY), {
+    type: INVALIDATED,
+    [ASYNC_UTILS_MARKER]: true,
+    [ASYNC_UTILS_STATE_FOR]: SOMETHING_TO_DO_ASYNCHRONOUSLY,
+    [ASYNC_UTILS_STATE]: INVALIDATED,
   });
 });
 
