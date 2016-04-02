@@ -6,6 +6,7 @@ import {
   PENDING,
   DONE,
   FAILURE,
+  INVALIDATED,
 } from './constants';
 
 export function pendingActionCreator(manageAsyncStateFor, group) {
@@ -42,5 +43,14 @@ export function failureActionCreator(manageAsyncStateFor, error = null) {
     [ASYNC_UTILS_MARKER]: true,
     [ASYNC_UTILS_STATE_FOR]: manageAsyncStateFor,
     [ASYNC_UTILS_STATE]: FAILURE,
+  };
+}
+
+export function invalidateActionCreator(manageAsyncStateFor) {
+  return {
+    type: INVALIDATED,
+    [ASYNC_UTILS_MARKER]: true,
+    [ASYNC_UTILS_STATE_FOR]: manageAsyncStateFor,
+    [ASYNC_UTILS_STATE]: INVALIDATED,
   };
 }

@@ -1,11 +1,13 @@
 import {
   createActionCreatorFromPromise,
+  invalidateActionCreator,
 } from 'redux-async-utils';
 
 // error factor
-const errorFactor = 6;
+const errorFactor = 2;
 
 // actions type
+export const INVALIDATE_ALL = 'INVALIDATE_ALL';
 export const ADD = 'ADD';
 export const UPDATE = 'UPDATED';
 export const REMOVE = 'REMOVE';
@@ -22,6 +24,14 @@ export const ASYNC_ACTIONS_GROUP = 'ASYNC_ACTIONS_GROUP';
 // use a key generator to get uniqueness based on an id
 export const createAsyncUpdateKey =
 id => ({ key: `UPDATE_ASYNC_${id}`, group: ASYNC_ACTIONS_GROUP });
+
+
+// invalidate all action creator
+export const invalidateAllActionCreator = () => (dispatch) => {
+  dispatch(invalidateActionCreator(ADD_ASYNC));
+  dispatch(invalidateActionCreator(SET_ASYNC));
+  dispatch(invalidateActionCreator(REMOVE_ASYNC));
+};
 
 
 // add action creator
@@ -77,7 +87,7 @@ export const removeActionCreator = createActionCreatorFromPromise(
 
   // get promise function
   // this receive all the parameters passed to the action creator and getState function
-  (getState) => new Promise((resolve, reject) => {
+  (dispatch, getState) => new Promise((resolve, reject) => {
     setTimeout(() => {
       // randomly give an error
       if (parseInt((Math.random() * 100), 10) % errorFactor) {

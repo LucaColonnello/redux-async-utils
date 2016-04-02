@@ -6,6 +6,7 @@ import {
   PENDING,
   DONE,
   FAILURE,
+  INVALIDATED,
 } from './constants';
 
 export const initialState = {
@@ -67,7 +68,7 @@ export default function asyncActionsState(state = initialState, action = {}) {
     }
 
     // create new
-    if (typeof index === 'undefined') {
+    if (typeof index === 'undefined' && asyncState !== INVALIDATED) {
       const newActionState = {
         [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
         state: asyncState,
@@ -102,7 +103,10 @@ export default function asyncActionsState(state = initialState, action = {}) {
       // prevent pending action dispatched twice
       previousState.state !== asyncState
     ) {
-      newState.digested--;
+      if (asyncState !== INVALIDATED) {
+        newState.digested--;
+      }
+
       if (previousState.state === DONE) {
         newState.successCount--;
       }

@@ -24,7 +24,7 @@ function mapStateToProps(state = {}) {
   );
 
   return {
-    loading: !asyncChecker.hasDone(),
+    loading: asyncChecker.isPending(),
   };
 }
 
