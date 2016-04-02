@@ -71,7 +71,7 @@ function mapStateToProps(state = {}, props) {
   );
 
   return {
-    loading: !asyncChecker.hasDone(),
+    loading: asyncChecker.isPending(),
     errors: asyncChecker.getErrors(),
     item: state.simpleDataList[props.index],
   };

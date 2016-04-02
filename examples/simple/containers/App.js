@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
+  invalidateAllActionCreator,
   addActionCreator,
   removeActionCreator,
   setActionCreator,
@@ -21,9 +22,20 @@ class App extends Component {
       list,
     } = this.props;
 
-    const _addActionCreator = () => this.props.addActionCreator();
-    const _removeActionCreator = () => this.props.removeActionCreator();
-    const _setActionCreator = () => this.props.setActionCreator();
+    const _addActionCreator = () => {
+      this.props.invalidateAllActionCreator();
+      this.props.addActionCreator();
+    };
+
+    const _removeActionCreator = () => {
+      this.props.invalidateAllActionCreator();
+      this.props.removeActionCreator();
+    };
+
+    const _setActionCreator = () => {
+      this.props.invalidateAllActionCreator();
+      this.props.setActionCreator();
+    };
 
     return (
       <div>
@@ -61,6 +73,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+  invalidateAllActionCreator: PropTypes.func.isRequired,
   addActionCreator: PropTypes.func.isRequired,
   removeActionCreator: PropTypes.func.isRequired,
   setActionCreator: PropTypes.func.isRequired,
@@ -78,13 +91,14 @@ function mapStateToProps(state = {}) {
   );
 
   return {
-    loading: !asyncChecker.hasDone(),
+    loading: asyncChecker.isPending(),
     errors: asyncChecker.getErrors(),
     list: state.simpleDataList || [],
   };
 }
 
 export default connect(mapStateToProps, {
+  invalidateAllActionCreator,
   addActionCreator,
   removeActionCreator,
   setActionCreator,
