@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  invalidateAllActionCreator,
   addActionCreator,
   removeActionCreator,
   setActionCreator,
@@ -11,7 +10,9 @@ import {
 } from '../actions';
 import GlobalLoader from '../containers/GlobalLoader';
 import SimpleDataListItem from '../containers/SimpleDataListItem';
-import { createAsyncActionsStateChecker } from 'redux-async-utils';
+import {
+  createAsyncActionsStateChecker,
+} from 'redux-async-utils';
 
 class App extends Component {
 
@@ -23,17 +24,14 @@ class App extends Component {
     } = this.props;
 
     const _addActionCreator = () => {
-      this.props.invalidateAllActionCreator();
       this.props.addActionCreator();
     };
 
     const _removeActionCreator = () => {
-      this.props.invalidateAllActionCreator();
       this.props.removeActionCreator();
     };
 
     const _setActionCreator = () => {
-      this.props.invalidateAllActionCreator();
       this.props.setActionCreator();
     };
 
@@ -73,7 +71,6 @@ class App extends Component {
 }
 
 App.propTypes = {
-  invalidateAllActionCreator: PropTypes.func.isRequired,
   addActionCreator: PropTypes.func.isRequired,
   removeActionCreator: PropTypes.func.isRequired,
   setActionCreator: PropTypes.func.isRequired,
@@ -98,7 +95,6 @@ function mapStateToProps(state = {}) {
 }
 
 export default connect(mapStateToProps, {
-  invalidateAllActionCreator,
   addActionCreator,
   removeActionCreator,
   setActionCreator,

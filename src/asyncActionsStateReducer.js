@@ -45,30 +45,31 @@ export default function asyncActionsState(state = initialState, action = {}) {
     if (typeof newState.indexes[asyncStateFor] !== 'undefined') {
       index = newState.indexes[asyncStateFor];
       previousState = Object.assign({}, newState.asyncActionsStates[index]);
-      newState.asyncActionsStates[index] = {
-        [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
-        state: asyncState,
-        error,
-      };
     } else {
       // search in the array and create indexes
       newState.asyncActionsStates.forEach((v, i) => {
         if (v[ASYNC_UTILS_STATE_FOR] === asyncStateFor) {
           index = i;
           previousState = Object.assign({}, newState.asyncActionsStates[index]);
-          newState.asyncActionsStates[i] = {
-            [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
-            state: asyncState,
-            error,
-          };
         }
 
         newState.indexes[v[ASYNC_UTILS_STATE_FOR]] = i;
       });
     }
 
+    // if a pending action become INVALIDATED before being completed,
+    // when DONE or FAILURE state will be dispatched
+    // simply ignore them
+    if (
+      previousState &&
+      asyncState !== PENDING &&
+      previousState.state === INVALIDATED
+    ) {
+      return newState;
+    }
+
     // create new
-    if (typeof index === 'undefined' && asyncState !== INVALIDATED) {
+    if (typeof index === 'undefined') {
       const newActionState = {
         [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
         state: asyncState,
@@ -89,6 +90,12 @@ export default function asyncActionsState(state = initialState, action = {}) {
           newState.groups[asyncStateGroup].push(index);
         }
       }
+    } else {
+      newState.asyncActionsStates[index] = {
+        [ASYNC_UTILS_STATE_FOR]: asyncStateFor,
+        state: asyncState,
+        error,
+      };
     }
 
     // if an async action was digested and a new pending action is requested,
@@ -103,7 +110,9 @@ export default function asyncActionsState(state = initialState, action = {}) {
       // prevent pending action dispatched twice
       previousState.state !== asyncState
     ) {
-      if (asyncState !== INVALIDATED) {
+      if (
+        asyncState !== INVALIDATED
+      ) {
         newState.digested--;
       }
 
@@ -118,6 +127,10 @@ export default function asyncActionsState(state = initialState, action = {}) {
     }
 
     // update vars
+    if (asyncState === INVALIDATED && (!previousState || previousState.state === PENDING)) {
+      newState.digested++;
+    }
+
     if (asyncState === DONE && (!previousState || previousState.state !== DONE)) {
       newState.digested++;
       newState.successCount++;
