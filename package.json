@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/LucaColonnello/redux-async-utils",
   "devDependencies": {
-    "ava": "0.9.1",
+    "ava": "0.13.0",
     "babel-cli": "6.4.0",
     "babel-core": "6.4.0",
     "babel-eslint": "6.0.2",
