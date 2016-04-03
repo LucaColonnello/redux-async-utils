@@ -11,6 +11,7 @@ import {
 import GlobalLoader from '../containers/GlobalLoader';
 import SimpleDataListItem from '../containers/SimpleDataListItem';
 import {
+  invalidateActionCreator,
   createAsyncActionsStateChecker,
 } from 'redux-async-utils';
 
@@ -24,15 +25,24 @@ class App extends Component {
     } = this.props;
 
     const _addActionCreator = () => {
-      this.props.addActionCreator();
+      this.props.addActionCreator().then((d) => {
+        if (d instanceof Error) return;
+        this.props.invalidateActionCreator(ADD_ASYNC);
+      });
     };
 
     const _removeActionCreator = () => {
-      this.props.removeActionCreator();
+      this.props.removeActionCreator().then((d) => {
+        if (d instanceof Error) return;
+        this.props.invalidateActionCreator(REMOVE_ASYNC);
+      });
     };
 
     const _setActionCreator = () => {
-      this.props.setActionCreator();
+      this.props.setActionCreator().then((d) => {
+        if (d instanceof Error) return;
+        this.props.invalidateActionCreator(SET_ASYNC);
+      });
     };
 
     return (
@@ -71,6 +81,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+  invalidateActionCreator: PropTypes.func.isRequired,
   addActionCreator: PropTypes.func.isRequired,
   removeActionCreator: PropTypes.func.isRequired,
   setActionCreator: PropTypes.func.isRequired,
@@ -95,6 +106,7 @@ function mapStateToProps(state = {}) {
 }
 
 export default connect(mapStateToProps, {
+  invalidateActionCreator,
   addActionCreator,
   removeActionCreator,
   setActionCreator,

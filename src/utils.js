@@ -55,14 +55,14 @@ export function createActionCreatorFromPromise(
         typeof lockIfAlreadyInPending === 'boolean' &&
         isPending(getState(), key)
       ) {
-        return Promise.resolve();
+        return new Promise(() => {});
       }
 
       if (
         typeof lockIfAlreadyInPending === 'string' &&
         isPending(getState(), lockIfAlreadyInPending)
       ) {
-        return Promise.resolve();
+        return new Promise(() => {});
       }
 
       if (
@@ -70,7 +70,7 @@ export function createActionCreatorFromPromise(
         lockIfAlreadyInPending.length &&
         isPending(getState(), ...lockIfAlreadyInPending)
       ) {
-        return Promise.resolve();
+        return new Promise(() => {});
       }
 
       if (
@@ -78,7 +78,7 @@ export function createActionCreatorFromPromise(
         typeof lockIfAlreadyInPending.length === 'undefined' &&
         isPending(getState(), lockIfAlreadyInPending)
       ) {
-        return Promise.resolve();
+        return new Promise(() => {});
       }
     }
 
