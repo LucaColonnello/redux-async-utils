@@ -86,18 +86,18 @@ class AsyncActionsStateChecker {
   }
 }
 
-export default function createAsyncActionsStateChecker(store = {}, ...checkFor) {
+export default function createAsyncActionsStateChecker(state = {}, ...checkFor) {
   let asyncActionsStateChecker;
-  if (store.asyncActionsState) {
+  if (state.asyncActionsState) {
     if (!checkFor.length) {
       asyncActionsStateChecker = new AsyncActionsStateChecker({
         allDone: (
-          store.asyncActionsState.digested === store.asyncActionsState.asyncActionsStates.length
+          state.asyncActionsState.digested === state.asyncActionsState.asyncActionsStates.length
         ),
-        errors: store
+        errors: state
           .asyncActionsState
           .failedActionsIndexes.map(i => {
-            return store
+            return state
               .asyncActionsState
               .asyncActionsStates[i].error;
           })
@@ -108,22 +108,22 @@ export default function createAsyncActionsStateChecker(store = {}, ...checkFor) 
       checkFor.forEach((k) => {
         if (typeof k === 'object' && k.group) {
           // manage groups
-          const value = store
+          const value = state
           .asyncActionsState
           .groups[k.group];
 
           if (value && value.length) {
             value.forEach((v) => {
-              const action = store
+              const action = state
               .asyncActionsState
               .asyncActionsStates[v];
               asyncActionsState[action[ASYNC_UTILS_STATE_FOR]] = action;
             });
           }
         } else if (typeof k === 'string') {
-          const value = store
+          const value = state
           .asyncActionsState
-          .asyncActionsStates[store.asyncActionsState.indexes[k]];
+          .asyncActionsStates[state.asyncActionsState.indexes[k]];
 
           asyncActionsState[k] = value;
         }
